@@ -1,0 +1,36 @@
+#!/bin/bash
+
+clear
+
+echo $'\n'$"=========================         Temperature:           ========================="
+/usr/bin/vcgencmd measure_temp
+
+#echo $'\n'$"=========================       Attached Drives:         ========================="
+#/bin/lsblk | /bin/grep -e "part" -e "disk"
+
+echo $'\n'$"=========================          Disk Usage:           ========================="
+#/bin/df -h /dev/sd[a-z][1-9] 2>/dev/null
+/bin/df -h 2>/dev/null
+
+echo $'\n'$"=========================         Memory Usage:          ========================="
+/usr/bin/free -h
+
+echo $'\n'$"=========================     Processes usig memory:     ========================="
+/bin/ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%mem | head -n 6
+
+echo $'\n'$"=========================      Processes usig cpu:       ========================="
+/bin/ps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head -n  6
+
+#echo $'\n'$"=========================        PiVPN Clients:          ========================="
+#/usr/local/bin/pivpn -c
+
+echo $'\n'$"=========================   Interfaces & IP Addresses:   ========================="
+ip a | grep -w -e "inet" -e "inet6" -e "[0-9]:"
+
+echo $'\n'$"=========================            Uptime:             ========================="
+/usr/bin/uptime
+
+echo $'\n'
+
+exit
+

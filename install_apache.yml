@@ -4,7 +4,28 @@
   become: true
   tasks:
 
-  - name: Install python3
+  - name: Install Updates (CentOS)
+    yum:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: Install Updates (Debian)
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Debian"
+
+  - name: Install Apache (CentOS)
     package:
+      name: httpd
+      state: latest
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: Install Python 3 (Debian)
+    apt:
       name: python3
       state: latest
+      update_cache: yes
+    when: ansible_distribution == "Debian"

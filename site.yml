@@ -1,0 +1,76 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+  - name: Install Updates (CentOS)
+    tags: always
+    yum:
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: Install Updates (Debian)
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution == "Debian"
+
+
+
+- hosts: WebServer
+  become: true
+  tasks:
+
+  - name: Install Apache (CentOS)
+    package:
+      name: httpd
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+  - name: Start and enamble Apache (CentOS)
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+    when: ansible_distribution == "CentOS"
+
+  - name: Install Apache (Debian)
+    apt:
+      name: apache2
+      state: latest
+    when: ansible_distribution == "Debian"
+
+
+
+- hosts: FileServer
+  become: true
+  tasks:
+
+  - name: Install Samba
+    package:
+      name: samba
+      state: latest
+
+  - name: Start and enamble Samba (CentOS)
+    service:
+      name: smb
+      state: started
+      enabled: yes
+    when: ansible_distribution == "CentOS"
+
+
+
+- hosts: RPiOS
+  become: true
+  tasks:
+
+  - name: Copy Files
+    copy:
+      src: ./RPiOS/user_bin/chksys
+      dest: /home/pi/bin/chksys
+      owner: pi
+      group: pi
+      mode: 0755
